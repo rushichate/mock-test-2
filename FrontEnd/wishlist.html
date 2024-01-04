@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist Page</title>
+    <style>
+        *{
+            text-decoration: none;
+        }
+        #navbar{
+            display: flex;
+            justify-content: space-around;
+           background-color: aqua;
+        }
+        #navbar a{
+            color: black;
+            background-color: chartreuse;
+            border-radius: 50%;
+            border: solid blue;
+        }
+        #wish-container{
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+        }
+        .carCard{
+            border: solid black;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <a href="../index.html"><h1>Ad Page</h1></a>
+        <a href="./cars.html"><h1>Cars Page</h1></a>
+        <a href="./wishlist.html"><h1>Wishlist Page</h1></a>
+    </nav>
+    <div id="container">
+        <h1>Wishlist</h1>
+        <div id="wish-container">
+
+        </div>
+    </div>
+    
+</body>
+<script>
+    const wishContainer = document.getElementById("wish-container")
+
+    fetch("http://localhost:3000/wishlist")
+    .then(res=>res.json())
+    .then(cars=>{
+        displayCars(cars)
+    })
+    .catch(error=>{
+        console.error("Error fetching cars:",error)
+    })
+
+    function displayCars(cars){
+        wishContainer.innerHTML=""
+        cars.forEach(car=>{
+            const card = document.createElement("div")
+            card.classList.add("carCard")
+
+            const image = document.createElement("img")
+            image.src = `https://imgd.aeplcdn.com/370x208/n/cw/ec/141867/nexon-exterior-right-front-three-quarter-71.jpeg?isig=0&q=80`
+            image.alt = "Error"
+            card.appendChild(image)
+            const brand = document.createElement("h3")
+            brand.textContent = car.brand
+            card.appendChild(brand)
+
+            const type = document.createElement("p")
+            type.textContent = `Type:${car.type}`
+            card.appendChild(type)
+
+            const year = document.createElement("p")
+            year.textContent = `Year:${car.year}`
+            card.appendChild(year)
+
+            const kms = document.createElement("p")
+            kms.textContent = `Kms:${car.kms}`
+            card.appendChild(kms)
+
+            const description = document.createElement("p")
+            description.textContent = `Description:${car.description}`
+            card.appendChild(description)
+
+            const price = document.createElement("p")
+            price.textContent = `Price:${car.price}`
+            card.appendChild(price)
+
+            const delet = document.createElement("button")
+            delet.textContent = "Remove"
+            delet.addEventListener("click",()=>handleDelete(car.id))
+            card.appendChild(delet)
+
+            wishContainer.appendChild(card)
+        })
+    }
+    function handleDelete(carId){
+
+        fetch(`http://localhost:3000/wishlist/${carId}`,{
+            method:"DELETE"
+        })
+        .then(res=>res.json())
+        .then(res=>{
+            alert("Car Removed from wishlist")
+        })
+        .catch(error=>{
+            console.error("Error deleting car:",error)
+        })
+    }
+</script>
+</html>

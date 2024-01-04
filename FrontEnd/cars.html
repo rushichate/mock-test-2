@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cars Page</title>
+    <style>
+        *{
+            text-decoration: none;
+        }
+        #navbar{
+            display: flex;
+            justify-content: space-around;
+           background-color: aqua;
+        }
+        #navbar a{
+            color: black;
+            background-color: chartreuse;
+            border-radius: 50%;
+            border: solid blue;
+        }
+        #carsContainer{
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+        }
+        .carCard{
+            border: solid black;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 15px;
+        }
+        #filter{
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <a href="../index.html"><h1>Ad Page</h1></a>
+        <a href="./cars.html"><h1>Cars Page</h1></a>
+        <a href="./wishlist.html"><h1>Wishlist Page</h1></a>
+    </nav>
+    <div id="filter">
+        <label for="sortByprice">Sort by Price</label>
+        <select name="" id="sortPrice">
+            <option value="">Select</option>
+            <option value="asc">Low to High</option>
+            <option value="desc">High to Low</option>
+        </select>
+
+        <label for="sortKms">Sort by Kms</label>
+        <select name="" id="sortKms">
+            <option value="">Select</option>
+            <option value="asc">Low to High</option>
+            <option value="desc">High to Low</option>
+        </select>
+
+        <label for="filterBrand">Filter by Brand</label>
+        <select name="brand" id="brand">
+            <option value="">Select</option>
+            <option value="Tata">Tata</option>
+            <option value="Toyota">Toyota</option>
+            <option value="Mahindra">Mahindra</option>
+            <option value="Maruti">Maruti</option>
+        </select>
+    </div>
+    <div id="container">
+     <h1>Cars Page</h1>
+    <div id="carsContainer">
+
+
+    </div>
+    </div>
+    
+</body>
+<script>
+    const carContainer = document.getElementById("carsContainer")
+    const sortPrice = document.getElementById("sortPrice")
+    const sortKms = document.getElementById("sortKms")
+    const filterBrand = document.getElementById("brand")
+
+    let carsData = []
+
+    fetch("http://localhost:3000/cars")
+    .then(res=>res.json())
+    .then(cars=>{
+        carsData = cars
+        displayCars(cars)
+    })
+    .catch(error=>{
+        console.error("Error fetching cars:",error)
+    })
+
+    sortPrice.addEventListener("change",function (){
+        const sortedCars = sortCars("price",this.value)
+        displayCars(sortedCars)
+    })
+     
+    sortKms.addEventListener('change', function () {
+        const sortedCars = sortCars('kms', this.value);
+        displayCars(sortedCars);
+    })
+
+    filterBrand.addEventListener('change', function () {
+        const filteredCars = filterCars('brand', this.value);
+        displayCars(filteredCars);
+    })
+
+    function sortCars(property, order) {
+        const sortedCars = [...carsData];
+        sortedCars.sort((a, b) => {
+            const aValue = a[property];
+            const bValue = b[property];
+            return order === 'asc' ? aValue - bValue : bValue - aValue;
+        });
+        return sortedCars;
+    }
+
+    function filterCars(property, value) {
+        if (!value) {
+            return carsData; // Return original data if no filter value is selected
+        }
+        const filteredCars = carsData.filter(car => car[property] === value);
+        return filteredCars;
+    }
+
+    function displayCars(cars){
+        carContainer.innerHTML=""
+        cars.forEach(car=>{
+            const card = document.createElement("div")
+            card.classList.add("carCard")
+
+            const image = document.createElement("img")
+            image.src = `https://imgd.aeplcdn.com/370x208/n/cw/ec/141867/nexon-exterior-right-front-three-quarter-71.jpeg?isig=0&q=80`
+            image.alt = "Error"
+            card.appendChild(image)
+            const brand = document.createElement("h3")
+            brand.textContent = car.brand
+            card.appendChild(brand)
+
+            const type = document.createElement("p")
+            type.textContent = `Type:${car.type}`
+            card.appendChild(type)
+
+            const year = document.createElement("p")
+            year.textContent = `Year:${car.year}`
+            card.appendChild(year)
+
+            const kms = document.createElement("p")
+            kms.textContent = `Kms:${car.kms}`
+            card.appendChild(kms)
+
+            const description = document.createElement("p")
+            description.textContent = `Description:${car.description}`
+            card.appendChild(description)
+
+            const price = document.createElement("p")
+            price.textContent = `Price:${car.price}`
+            card.appendChild(price)
+
+            const edit = document.createElement("button")
+            edit.textContent = "Edit"
+            edit.addEventListener("click",()=>handleEdit(car))
+            card.appendChild(edit)
+
+            const delet = document.createElement("button")
+            delet.textContent = "Delete"
+            delet.addEventListener("click",()=>handleDelete(car.id))
+            card.appendChild(delet)
+
+            const wish = document.createElement("button")
+            wish.textContent = "Wishlist"
+            wish.addEventListener("click",()=>handleWish(car))
+            card.appendChild(wish)
+
+            carContainer.appendChild(card)
+        })
+    }
+
+    function handleDelete(carId){
+
+        fetch(`http://localhost:3000/cars/${carId}`,{
+            method:"DELETE"
+        })
+        .then(res=>res.json())
+        .then(res=>{
+            alert("Car Deleted")
+        })
+        .catch(error=>{
+            console.error("Error deleting car:",error)
+        })
+    }
+    function handleWish(car){
+        const adData = car
+
+        fetch(`http://localhost:3000/wishlist`,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(adData)
+        })
+        .then(res=>res.json())
+          .then(data=>{
+            alert("Added to Wishlist")
+          })
+        .catch(error =>{
+            console.error("Error posting ad:",error)
+        })
+    }
+</script>
+
+</html>

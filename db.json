@@ -1,0 +1,42 @@
+{
+  "cars": [
+    {
+      "id": 1,
+      "brand": "Tata",
+      "type": "Manual",
+      "year": 2016,
+      "kms": 60000,
+      "description": "okok",
+      "price": 5000
+    },
+    {
+      "id": 2,
+      "brand": "Tata",
+      "type": "Manual",
+      "year": 2016,
+      "kms": 56526,
+      "description": "a good car forst owner",
+      "price": 2649215
+    }
+  ],
+  "wishlist": [
+    {
+      "id": 1,
+      "brand": "Tata",
+      "type": "Manual",
+      "year": 2016,
+      "kms": 60000,
+      "description": "okok",
+      "price": 5000
+    },
+    {
+      "id": 2,
+      "brand": "Tata",
+      "type": "Manual",
+      "year": 2016,
+      "kms": 56526,
+      "description": "a good car forst owner",
+      "price": 2649215
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad Page</title>
+    <style>
+        *{
+            text-decoration: none;
+        }
+        #navbar{
+            display: flex;
+            justify-content: space-around;
+           background-color: aqua;
+        }
+        #navbar a{
+            color: black;
+            background-color: chartreuse;
+            border-radius: 50%;
+            border: solid blue;
+        }
+        #adForm label{
+            display: block;
+            margin-top: 10px;
+        }
+
+        .container{
+            margin-left: 100px;
+            border: solid black;
+            width: 300px;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 15px;
+            background-color: violet;
+        }
+
+        .container button{
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <a href="./index.html"><h1>Ad Page</h1></a>
+        <a href="./FrontEnd/cars.html"><h1>Cars Page</h1></a>
+        <a href="./FrontEnd/wishlist.html"><h1>Wishlist Page</h1></a>
+    </nav>
+    <div class="container">
+     <h1>Ad Page</h1>
+     <form id="adForm">
+        <label for="brand">Brand:</label>
+        <select name="brand" id="brand">
+            <option value="">Select</option>
+            <option value="Tata">Tata</option>
+            <option value="Toyota">Toyota</option>
+            <option value="Mahindra">Mahindra</option>
+            <option value="Maruti">Maruti</option>
+        </select>
+        <label for="type">Manual or Automated:</label>
+        <select name="type" id="type">
+            <option value="">Select</option>
+            <option value="Manual">Manual</option>
+            <option value="Automated">Automated</option>
+        </select>
+        <label for="year">Year of Purchase:</label>
+        <select name="year" id="year">
+            <option value="">Select</option>
+            <option value="2015">2015</option>
+            <option value="2016">2016</option>
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <option value="2019">2019</option>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+        </select>
+        <label for="kms">KM Driven:</label>
+        <input type="number" id="kms" required>
+        <label for="description">Description:</label>
+        <input type="text" id="desc" required>
+        <label for="price">Price:</label>
+        <input type="number" name="price" id="price" required>
+        <button type="submit">Submit</button>
+     </form>
+    </div>
+</body>
+<script>
+    const adForm = document.getElementById("adForm")
+
+    adForm.addEventListener("submit", function(e){
+        e.preventDefault()
+
+        const brand = document.getElementById("brand").value
+        const type = document.getElementById("type").value
+        const year = document.getElementById("year").value
+        const kms = document.getElementById("kms").value
+        const description = document.getElementById("desc").value
+        const price = document.getElementById("price").value
+
+        const adData = {
+            brand,type,year:parseInt(year),kms:parseInt(kms),description,price:parseInt(price)
+        }
+
+        fetch(`http://localhost:3000/carad`,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(adData)
+        })
+        .then(res=>res.json())
+          .then(data=>{
+            alert("Ad Posted Successfully")
+            adForm.reset();
+          })
+        .catch(error =>{
+            console.error("Error posting ad:",error)
+        })
+    })
+</script>
+</html>
