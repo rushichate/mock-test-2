@@ -16,9 +16,6 @@ server.use((req,res,next)=>{
     setTimeout(next,1000)
 })
 
-server.get("/",(req,res)=>{
-    res.json("Welcome To Car Rental App")
-})
 
 server.get("/cars",(req,res)=>{
     const cars = router.db.get("cars").value();
